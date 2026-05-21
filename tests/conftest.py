@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2026 Michael Traver for Adafruit Industries
+# SPDX-FileCopyrightText: 2026 Michael Traver
 #
 # SPDX-License-Identifier: MIT
 
