@@ -6,6 +6,5 @@ import sys
 
 import test.fontio
 
-
 # Make the mock fontio available during testing.
-sys.modules['fontio'] = test.fontio
+sys.modules["fontio"] = test.fontio

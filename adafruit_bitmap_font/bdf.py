@@ -25,10 +25,11 @@ Implementation Notes
 from __future__ import annotations
 
 try:
-    from typing import TYPE_CHECKING, Iterable, Optional, Tuple, Union
+    from typing import TYPE_CHECKING, Iterable
 
     if TYPE_CHECKING:
         from io import FileIO
+
         from displayio import Bitmap
 except ImportError:
     pass
@@ -38,7 +39,6 @@ import gc
 from fontio import Glyph
 
 from .glyph_cache import GlyphCache
-
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Bitmap_Font.git"
@@ -64,7 +64,7 @@ class BDF(GlyphCache):
         self._descent = None
 
     @property
-    def descent(self) -> Optional[int]:
+    def descent(self) -> int | None:
         """The number of pixels below the baseline of a typical descender"""
         if self._descent is None:
             self.file.seek(0)
@@ -80,7 +80,7 @@ class BDF(GlyphCache):
         return self._descent
 
     @property
-    def ascent(self) -> Optional[int]:
+    def ascent(self) -> int | None:
         """The number of pixels above the baseline of a typical ascender"""
         if self._ascent is None:
             self.file.seek(0)
@@ -123,11 +123,11 @@ class BDF(GlyphCache):
         line = self.file.readline()
         return str(line, "utf-8")
 
-    def get_bounding_box(self) -> Tuple[int, int, int, int]:
+    def get_bounding_box(self) -> tuple[int, int, int, int]:
         """Return the maximum glyph size as a 4-tuple of: width, height, x_offset, y_offset"""
         return self._boundingbox
 
-    def load_glyphs(self, code_points: Union[int, str, Iterable[int]]) -> None:
+    def load_glyphs(self, code_points: int | str | Iterable[int]) -> None:
         metadata = True
         character = False
         code_point = None

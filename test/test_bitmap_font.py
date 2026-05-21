@@ -3,10 +3,11 @@
 # SPDX-License-Identifier: MIT
 
 from dataclasses import dataclass
+
 import pytest
 
-from test.displayio import Bitmap
 from adafruit_bitmap_font import bitmap_font
+from test.displayio import Bitmap
 
 
 @dataclass
@@ -40,8 +41,8 @@ class FontParam:
                 expected_bounding_box=(37, 43, -3, -9),
                 expected_ascent=24,
                 expected_descent=8,
-                code_point=ord('A'),
-                unknown_code_point=0x10ffff,
+                code_point=ord("A"),
+                unknown_code_point=0x10FFFF,
                 expected_glyph_width=22,
                 expected_glyph_height=26,
             ),
@@ -53,8 +54,8 @@ class FontParam:
                 expected_bounding_box=(37, 43, -3, -9),
                 expected_ascent=24,
                 expected_descent=8,
-                code_point=ord('A'),
-                unknown_code_point=0x10ffff,
+                code_point=ord("A"),
+                unknown_code_point=0x10FFFF,
                 expected_glyph_width=22,
                 expected_glyph_height=26,
             ),
@@ -71,8 +72,8 @@ class FontParam:
                 expected_bounding_box=(0, 16, 0, -2),
                 expected_ascent=14,
                 expected_descent=-2,
-                code_point=ord('A'),
-                unknown_code_point=0x10ffff,
+                code_point=ord("A"),
+                unknown_code_point=0x10FFFF,
                 expected_glyph_width=6,
                 expected_glyph_height=10,
             ),

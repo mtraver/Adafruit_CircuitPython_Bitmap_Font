@@ -27,7 +27,7 @@ from __future__ import annotations
 import struct
 
 try:
-    from typing import TYPE_CHECKING, Iterable, Union
+    from typing import TYPE_CHECKING, Iterable
 
     if TYPE_CHECKING:
         from io import FileIO
@@ -191,7 +191,7 @@ class LVGLFont(GlyphCache):
             needed_bits -= available_bits
         return result
 
-    def load_glyphs(self, code_points: Union[int, str, Iterable[int]]) -> None:
+    def load_glyphs(self, code_points: int | str | Iterable[int]) -> None:
         # pylint: disable=too-many-statements,too-many-branches,too-many-nested-blocks,too-many-locals
         if isinstance(code_points, int):
             code_points = (code_points,)

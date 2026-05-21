@@ -25,7 +25,7 @@ Implementation Notes
 from __future__ import annotations
 
 try:
-    from typing import TYPE_CHECKING, Optional, Union
+    from typing import TYPE_CHECKING
 
     if TYPE_CHECKING:
         from displayio import Bitmap
@@ -33,7 +33,6 @@ except ImportError:
     pass
 
 from . import bdf, lvfontbin, pcf, ttf
-
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Bitmap_Font.git"
@@ -44,8 +43,8 @@ LVGL_HEADER_SIZE = b"\x30\x00\x00\x00"
 
 
 def load_font(
-    filename: str, bitmap: Optional[Bitmap] = None
-) -> Union[bdf.BDF, lvfontbin.LVGLFont, pcf.PCF, ttf.TTF]:
+    filename: str, bitmap: Bitmap | None = None
+) -> bdf.BDF | lvfontbin.LVGLFont | pcf.PCF | ttf.TTF:
     """Loads a font file. Returns None if unsupported."""
     if not bitmap:
         import displayio

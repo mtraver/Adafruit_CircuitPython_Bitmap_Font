@@ -7,10 +7,11 @@
 from __future__ import annotations
 
 try:
-    from typing import TYPE_CHECKING, Tuple
+    from typing import TYPE_CHECKING
 
     if TYPE_CHECKING:
         from io import FileIO
+
         from displayio import Bitmap
 except ImportError:
     pass
@@ -27,7 +28,7 @@ class TTF:
 
         self.characters = {}
 
-        def read(format: str) -> Tuple:
+        def read(format: str) -> tuple:
             s = struct.calcsize(format)
             return struct.unpack_from(format, f.read(s))
 

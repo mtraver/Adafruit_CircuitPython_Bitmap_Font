@@ -25,10 +25,11 @@ Implementation Notes
 from __future__ import annotations
 
 try:
-    from typing import TYPE_CHECKING, Iterable, Iterator, Tuple, Union
+    from typing import TYPE_CHECKING, Iterable, Iterator
 
     if TYPE_CHECKING:
         from io import FileIO
+
         from displayio import Bitmap as displayioBitmap
 except ImportError:
     pass
@@ -159,11 +160,11 @@ class PCF(GlyphCache):
         """The number of pixels below the baseline of a typical descender"""
         return self._descent
 
-    def get_bounding_box(self) -> Tuple[int, int, int, int]:
+    def get_bounding_box(self) -> tuple[int, int, int, int]:
         """Return the maximum glyph size as a 4-tuple of: width, height, x_offset, y_offset"""
         return self._bounding_box
 
-    def _read(self, format_: str) -> Tuple:
+    def _read(self, format_: str) -> tuple:
         size = struct.calcsize(format_)
         if size != len(self.buffer):
             self.buffer = bytearray(size)
@@ -276,7 +277,7 @@ class PCF(GlyphCache):
             ink_maxbounds,
         )
 
-    def _read_properties(self) -> Iterator[Tuple[bytes, Union[bytes, int]]]:
+    def _read_properties(self) -> Iterator[tuple[bytes, bytes | int]]:
         property_table_offset = self.tables[_PCF_PROPERTIES]["offset"]
         self.file.seek(property_table_offset)
         (format_,) = self._read("<I")
@@ -307,7 +308,7 @@ class PCF(GlyphCache):
             else:
                 yield (string_map[name_offset], value)
 
-    def load_glyphs(self, code_points: Union[int, str, Iterable[int]]) -> None:
+    def load_glyphs(self, code_points: int | str | Iterable[int]) -> None:
         if isinstance(code_points, int):
             code_points = (code_points,)
         elif isinstance(code_points, str):

@@ -25,7 +25,7 @@ Implementation Notes
 from __future__ import annotations
 
 try:
-    from typing import TYPE_CHECKING, Iterable, Union
+    from typing import TYPE_CHECKING, Iterable
 
     if TYPE_CHECKING:
         from fontio import Glyph
@@ -33,7 +33,6 @@ except ImportError:
     pass
 
 import gc
-
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Bitmap_Font.git"
@@ -45,7 +44,7 @@ class GlyphCache:
     def __init__(self) -> None:
         self._glyphs = {}
 
-    def load_glyphs(self, code_points: Union[int, str, Iterable[int]]) -> None:
+    def load_glyphs(self, code_points: int | str | Iterable[int]) -> None:
         """Loads displayio.Glyph objects into the GlyphCache from the font."""
 
     def get_glyph(self, code_point: int) -> Glyph:
