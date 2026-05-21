@@ -22,11 +22,15 @@ Implementation Notes
 
 """
 
-try:
-    from io import FileIO
-    from typing import Iterable, Optional, Tuple, Union
+from __future__ import annotations
 
-    from displayio import Bitmap
+try:
+    from typing import TYPE_CHECKING, Iterable
+
+    if TYPE_CHECKING:
+        from io import FileIO
+
+        from displayio import Bitmap
 except ImportError:
     pass
 
@@ -60,7 +64,7 @@ class BDF(GlyphCache):
         self._descent = None
 
     @property
-    def descent(self) -> Optional[int]:
+    def descent(self) -> int | None:
         """The number of pixels below the baseline of a typical descender"""
         if self._descent is None:
             self.file.seek(0)
@@ -76,7 +80,7 @@ class BDF(GlyphCache):
         return self._descent
 
     @property
-    def ascent(self) -> Optional[int]:
+    def ascent(self) -> int | None:
         """The number of pixels above the baseline of a typical ascender"""
         if self._ascent is None:
             self.file.seek(0)
@@ -119,11 +123,11 @@ class BDF(GlyphCache):
         line = self.file.readline()
         return str(line, "utf-8")
 
-    def get_bounding_box(self) -> Tuple[int, int, int, int]:
+    def get_bounding_box(self) -> tuple[int, int, int, int]:
         """Return the maximum glyph size as a 4-tuple of: width, height, x_offset, y_offset"""
         return self._boundingbox
 
-    def load_glyphs(self, code_points: Union[int, str, Iterable[int]]) -> None:
+    def load_glyphs(self, code_points: int | str | Iterable[int]) -> None:
         metadata = True
         character = False
         code_point = None
@@ -142,7 +146,7 @@ class BDF(GlyphCache):
         else:
             remaining = set(code_points)
         for code_point in remaining.copy():
-            if code_point in self._glyphs and self._glyphs[code_point]:
+            if code_point in self._glyphs:
                 remaining.remove(code_point)
         if not remaining:
             return
@@ -233,3 +237,9 @@ class BDF(GlyphCache):
                     current_y += 1
             elif metadata:
                 pass
+
+        # Cache None for code points that don't exist in the font so that
+        # future attempts to load them don't result in a cache miss and a
+        # futile re-scan of the file.
+        for code_point in remaining:
+            self._glyphs[code_point] = None

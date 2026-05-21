@@ -4,11 +4,15 @@
 
 # Remove the above when TTF is actually supported.
 
-try:
-    from io import FileIO
-    from typing import Tuple
+from __future__ import annotations
 
-    from displayio import Bitmap
+try:
+    from typing import TYPE_CHECKING
+
+    if TYPE_CHECKING:
+        from io import FileIO
+
+        from displayio import Bitmap
 except ImportError:
     pass
 
@@ -24,7 +28,7 @@ class TTF:
 
         self.characters = {}
 
-        def read(format: str) -> Tuple:
+        def read(format: str) -> tuple:
             s = struct.calcsize(format)
             return struct.unpack_from(format, f.read(s))
 

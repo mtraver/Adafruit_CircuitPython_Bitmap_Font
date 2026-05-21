@@ -12,6 +12,7 @@ class Bitmap:
         if color_count > 255:
             raise ValueError("Cannot support that many colors")
         self.values = bytearray(width * height)
+        self._bits_per_value = 1
 
     def __setitem__(self, index, value):
         if isinstance(index, tuple):

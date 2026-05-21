@@ -22,11 +22,15 @@ Implementation Notes
 
 """
 
-try:
-    from io import FileIO
-    from typing import Iterable, Iterator, Tuple, Union
+from __future__ import annotations
 
-    from displayio import Bitmap as displayioBitmap
+try:
+    from typing import TYPE_CHECKING, Iterable, Iterator
+
+    if TYPE_CHECKING:
+        from io import FileIO
+
+        from displayio import Bitmap as displayioBitmap
 except ImportError:
     pass
 
@@ -35,7 +39,11 @@ import struct
 from collections import namedtuple
 
 from fontio import Glyph
-from micropython import const
+
+try:
+    from micropython import const
+except ImportError:
+    const = lambda x: x
 
 from .glyph_cache import GlyphCache
 
@@ -43,6 +51,7 @@ try:
     from bitmaptools import readinto as _bitmap_readinto
 except ImportError:
     _bitmap_readinto = None
+
 
 _PCF_PROPERTIES = const(1 << 0)
 _PCF_ACCELERATORS = const(1 << 1)
@@ -151,11 +160,11 @@ class PCF(GlyphCache):
         """The number of pixels below the baseline of a typical descender"""
         return self._descent
 
-    def get_bounding_box(self) -> Tuple[int, int, int, int]:
+    def get_bounding_box(self) -> tuple[int, int, int, int]:
         """Return the maximum glyph size as a 4-tuple of: width, height, x_offset, y_offset"""
         return self._bounding_box
 
-    def _read(self, format_: str) -> Tuple:
+    def _read(self, format_: str) -> tuple:
         size = struct.calcsize(format_)
         if size != len(self.buffer):
             self.buffer = bytearray(size)
@@ -268,7 +277,7 @@ class PCF(GlyphCache):
             ink_maxbounds,
         )
 
-    def _read_properties(self) -> Iterator[Tuple[bytes, Union[bytes, int]]]:
+    def _read_properties(self) -> Iterator[tuple[bytes, bytes | int]]:
         property_table_offset = self.tables[_PCF_PROPERTIES]["offset"]
         self.file.seek(property_table_offset)
         (format_,) = self._read("<I")
@@ -299,13 +308,13 @@ class PCF(GlyphCache):
             else:
                 yield (string_map[name_offset], value)
 
-    def load_glyphs(self, code_points: Union[int, str, Iterable[int]]) -> None:
+    def load_glyphs(self, code_points: int | str | Iterable[int]) -> None:
         if isinstance(code_points, int):
             code_points = (code_points,)
         elif isinstance(code_points, str):
             code_points = [ord(c) for c in code_points]
 
-        code_points = sorted(c for c in code_points if self._glyphs.get(c, None) is None)
+        code_points = sorted(c for c in code_points if c not in self._glyphs)
         if not code_points:
             return
 
@@ -405,3 +414,10 @@ class PCF(GlyphCache):
                         if buf[k // 8] & (128 >> (k % 8)):
                             bitmap[start + k] = 1
                     start += width
+
+        # Cache None for code points that don't exist in the font so that
+        # future attempts to load them don't result in a cache miss and a
+        # futile re-scan of the file.
+        for i, code_point in enumerate(code_points):
+            if all_metrics[i] is None:
+                self._glyphs[code_point] = None
