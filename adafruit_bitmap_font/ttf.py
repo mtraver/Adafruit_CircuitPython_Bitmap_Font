@@ -4,11 +4,14 @@
 
 # Remove the above when TTF is actually supported.
 
-try:
-    from io import FileIO
-    from typing import Tuple
+from __future__ import annotations
 
-    from displayio import Bitmap
+try:
+    from typing import TYPE_CHECKING, Tuple
+
+    if TYPE_CHECKING:
+        from io import FileIO
+        from displayio import Bitmap
 except ImportError:
     pass
 

@@ -22,11 +22,15 @@ Implementation Notes
 
 """
 
+from __future__ import annotations
+
 import struct
 
 try:
-    from io import FileIO
-    from typing import Iterable, Union
+    from typing import TYPE_CHECKING, Iterable, Union
+
+    if TYPE_CHECKING:
+        from io import FileIO
 except ImportError:
     pass
 
@@ -195,7 +199,7 @@ class LVGLFont(GlyphCache):
             code_points = [ord(c) for c in code_points]
 
         # Only load glyphs that aren't already cached
-        code_points = sorted(c for c in code_points if self._glyphs.get(c, None) is None)
+        code_points = sorted(c for c in code_points if c not in self._glyphs)
         if not code_points:
             return
 

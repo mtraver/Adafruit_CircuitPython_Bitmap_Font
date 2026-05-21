@@ -22,18 +22,21 @@ Implementation Notes
 
 """
 
+from __future__ import annotations
+
 try:
-    from typing import Optional, Union
+    from typing import TYPE_CHECKING, Optional, Union
 
-    from displayio import Bitmap
-
-    from . import bdf, lvfontbin, pcf, ttf
+    if TYPE_CHECKING:
+        from displayio import Bitmap
 except ImportError:
     pass
 
+from . import bdf, lvfontbin, pcf, ttf
+
+
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Bitmap_Font.git"
-
 
 # The LVGL file starts with the size of the 'head' section. It hasn't changed in five years so
 # we can treat it like a magic number.

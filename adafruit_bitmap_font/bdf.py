@@ -22,11 +22,14 @@ Implementation Notes
 
 """
 
-try:
-    from io import FileIO
-    from typing import Iterable, Optional, Tuple, Union
+from __future__ import annotations
 
-    from displayio import Bitmap
+try:
+    from typing import TYPE_CHECKING, Iterable, Optional, Tuple, Union
+
+    if TYPE_CHECKING:
+        from io import FileIO
+        from displayio import Bitmap
 except ImportError:
     pass
 
@@ -35,6 +38,7 @@ import gc
 from fontio import Glyph
 
 from .glyph_cache import GlyphCache
+
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Bitmap_Font.git"
@@ -142,7 +146,7 @@ class BDF(GlyphCache):
         else:
             remaining = set(code_points)
         for code_point in remaining.copy():
-            if code_point in self._glyphs and self._glyphs[code_point]:
+            if code_point in self._glyphs:
                 remaining.remove(code_point)
         if not remaining:
             return
@@ -233,3 +237,9 @@ class BDF(GlyphCache):
                     current_y += 1
             elif metadata:
                 pass
+
+        # Cache None for code points that don't exist in the font so that
+        # future attempts to load them don't result in a cache miss and a
+        # futile re-scan of the file.
+        for code_point in remaining:
+            self._glyphs[code_point] = None
