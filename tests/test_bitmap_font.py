@@ -7,7 +7,7 @@ from dataclasses import dataclass
 import pytest
 
 from adafruit_bitmap_font import bitmap_font
-from test.displayio import Bitmap
+from tests.displayio import Bitmap
 
 
 @dataclass
